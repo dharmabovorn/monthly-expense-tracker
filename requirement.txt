@@ -1,26 +1,5 @@
-{
-  "name": "expense-tracker",
-  "version": "1.0.0",
-  "description": "A static site that embeds a Streamlit expense tracker app",
-  "private": true,
-  "scripts": {
-    "prebuild": "echo 'Preparing build environment...'",
-    "build": "node build.js",
-    "postbuild": "echo 'Build completed successfully!'"
-  },
-  "author": "",
-  "license": "MIT",
-  "engines": {
-    "node": ">=16.0.0"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "netlify-cli": "^12.0.0"
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  }
-}
+streamlit==1.30.0
+pandas==2.1.1
+plotly==5.17.0
+fpdf2==2.7.8
+streamlit-option-menu==0.3.6
