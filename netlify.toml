@@ -13,8 +13,8 @@
   to = "/index.html"
   status = 200
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    functions = "functions"
-    publish = "public"
+[dev]
+  framework = "#custom"
+  targetPort = 8888
+  autoLaunch = true
+  publish = "public"
