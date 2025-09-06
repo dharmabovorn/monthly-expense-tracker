@@ -4,14 +4,25 @@
   "description": "A static site that embeds a Streamlit expense tracker app",
   "private": true,
   "scripts": {
-    "build": "echo 'No build step required for static site' && exit 0",
-    "prebuild": "echo 'Preparing static files...'"
+    "prebuild": "echo 'Preparing build environment...'",
+    "build": "node build.js",
+    "postbuild": "echo 'Build completed successfully!'"
   },
   "author": "",
   "license": "MIT",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "@netlify/plugin-nextjs": "^4.0.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^12.0.0"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  }
 }
