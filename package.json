@@ -4,12 +4,15 @@
   "description": "Expense Tracker with Streamlit and Netlify",
   "main": "build.js",
   "scripts": {
-    "build": "node expense_tracker/build.js",
+    "build": "node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["expense", "tracker", "streamlit", "netlify"],
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "dependencies": {},
   "devDependencies": {}
 }
