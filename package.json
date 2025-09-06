@@ -4,8 +4,14 @@
   "description": "A static site that embeds a Streamlit expense tracker app",
   "private": true,
   "scripts": {
-    "build": "echo 'No build step required for static site'"
+    "build": "echo 'No build step required for static site' && exit 0",
+    "prebuild": "echo 'Preparing static files...'"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
 }
