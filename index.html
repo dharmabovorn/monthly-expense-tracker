@@ -49,15 +49,15 @@
         </div>
         <iframe 
             id="streamlit-iframe" 
-            src="https://your-streamlit-app-url.streamlit.app" 
+            src="https://expense-tracker-2048.streamlit.app" 
             frameborder="0"
             onload="document.getElementById('loading').style.display='none';"
             onerror="document.getElementById('loading').innerHTML='Error loading the application. Please try again later or check the Streamlit app URL.';">
         </iframe>
     </div>
     <script>
-        // You can update this URL after deploying your Streamlit app
-        const streamlitAppUrl = 'https://your-streamlit-app-url.streamlit.app';
+        // Update this URL with your actual Streamlit app URL
+        const streamlitAppUrl = 'https://expense-tracker-2048.streamlit.app';
         document.getElementById('streamlit-iframe').src = streamlitAppUrl;
     </script>
 </body>
