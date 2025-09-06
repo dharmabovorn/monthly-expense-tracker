@@ -1,0 +1,11 @@
+{
+  "name": "expense-tracker",
+  "version": "1.0.0",
+  "description": "A static site that embeds a Streamlit expense tracker app",
+  "private": true,
+  "scripts": {
+    "build": "echo 'No build step required for static site'"
+  },
+  "author": "",
+  "license": "MIT"
+}
