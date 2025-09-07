@@ -1,7 +1,7 @@
 # Basic configuration for static site
 [build]
-  publish = "."
-  command = ""  # No build command needed
+  publish = "build"  # Changed to use the build directory
+  command = "npm install && npm run build"  # Install dependencies and run build script
 
 # SPA routing
 [[redirects]]
