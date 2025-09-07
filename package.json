@@ -4,7 +4,6 @@
   "description": "A simple expense tracking application",
   "private": true,
   "scripts": {
-    "build": "echo 'Build complete'",
     "predeploy": "echo 'No predeploy steps required'",
     "postdeploy": "echo 'Deployment complete'"
   },
