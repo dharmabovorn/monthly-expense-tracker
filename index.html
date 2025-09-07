@@ -4,61 +4,389 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
+        :root {
+            --primary-color: #0d6efd; /* Blue primary color */
+            --secondary-color: #f8f9fa;
+            --text-color: #333;
+            --income-color: #198754; /* Green for income */
+            --expense-color: #dc3545; /* Red for expenses */
+            --balance-positive: #000; /* Black for positive balance */
+            --balance-negative: #dc3545; /* Red for negative balance */
         }
-        .container {
-            width: 100%;
-            height: 100vh;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: var(--text-color);
+        }
+        .sidebar {
+            background-color: white;
+            min-height: 100vh;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .main-content {
+            padding: 2rem;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+        .transaction-item {
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 0.5rem;
+            padding: 0.75rem;
+            background-color: white;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+        }
+        .transaction-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .transaction-item.income {
+            border-left: 4px solid var(--income-color);
+        }
+        .transaction-item.expense {
+            border-left: 4px solid var(--expense-color);
+        }
+        .transaction-item .btn-group {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .transaction-item:hover .btn-group {
+            opacity: 1;
+        }
+        .badge {
+            font-size: 0.75em;
+            margin-right: 0.25rem;
+        }
+        .transaction-item .text-muted {
+            font-size: 0.85em;
+        }
+        /* Make sure the buttons are properly spaced */
+        .btn-group-sm > .btn {
+            padding: 0.25rem 0.5rem;
+        }
+        .text-income {
+            color: var(--income-color);
+        }
+        .text-expense {
+            color: var(--expense-color);
+        }
+        #balance {
+            color: var(--balance-positive);
+        }
+        #balance.negative {
+            color: var(--balance-negative);
+        }
+        .transactions-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .transactions-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        .transactions-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .transactions-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .transactions-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .nav-tabs .nav-link {
+            color: #495057;
+            border: none;
+            border-bottom: 3px solid transparent;
+            margin-right: 1rem;
+            padding: 0.5rem 0;
+            font-weight: 500;
+        }
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-color: var(--primary-color) var(--primary-color) #fff;
+        }
+        .nav-tabs .nav-link:hover:not(.active) {
+            border-color: #e9ecef #e9ecef #dee2e6;
+        }
+        .export-buttons {
             display: flex;
-            flex-direction: column;
+            gap: 0.5rem;
         }
-        .header {
-            background-color: #4CAF50;
+        @media (max-width: 768px) {
+            .export-buttons {
+                margin-top: 1rem;
+                justify-content: flex-start;
+            }
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 0 1rem;
+        }
+        .logo-symbol {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
             color: white;
-            padding: 1rem;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            letter-spacing: 0.5px;
+        }
+        .logo-tagline {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 0.25rem;
+        }
+        /* Style for transaction type selection */
+        .transaction-type-selector {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .type-option {
+            flex: 1;
             text-align: center;
         }
-        iframe {
-            flex-grow: 1;
-            border: none;
-            width: 100%;
+        .type-option input[type="radio"] {
+            display: none;
         }
-        .loading {
+        .type-option label {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-weight: 500;
+        }
+        .type-option input[type="radio"]:checked + label {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        #typeIncome:checked + label {
+            color: #198754;
+            border-color: #198754;
+        }
+        #typeExpense:checked + label {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        .type-option label i {
+            display: block;
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+        .transactions-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            font-size: 1.2rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .transaction-section {
+            margin-bottom: 1.5rem;
+        }
+        .transaction-section h6 {
+            color: #6c757d;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .transaction-section.income h6 {
+            color: #198754;
+        }
+        .transaction-section.expense h6 {
+            color: #dc3545;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>💰 Expense Tracker</h1>
-            <p>Track your expenses and manage your budget</p>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar p-3">
+                <div class="logo-container">
+                    <div class="logo-symbol">$</div>
+                    <div class="logo-text">Expense Tracker</div>
+                    <div class="logo-tagline">Track. Save. Prosper.</div>
+                </div>
+                <div class="d-grid gap-2 mb-4">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+                        <i class="bi bi-plus-lg me-1"></i> Add Transaction
+                    </button>
+                </div>
+                <div class="mb-4">
+                    <h6>Balance</h6>
+                    <h3 id="balance">$0.00</h3>
+                </div>
+                <div class="mb-4">
+                    <h6>Income</h6>
+                    <h5 class="text-success" id="income">$0.00</h5>
+                </div>
+                <div class="mb-4">
+                    <h6>Expenses</h6>
+                    <h5 class="text-danger" id="expenses">$0.00</h5>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <!-- Transaction List -->
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Transactions</h5>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="separateToggle">
+                                    <label class="form-check-label small" for="separateToggle">Separate Income/Expenses</label>
+                                </div>
+                                <div class="export-buttons">
+                                    <button id="exportPdfBtn" class="btn btn-outline-danger flex-grow-1" title="Export to PDF">
+                                        <i class="bi bi-file-earmark-pdf me-2"></i> Export PDF
+                                    </button>
+                                    <button id="exportCsvBtn" class="btn btn-outline-success flex-grow-1" title="Export to CSV">
+                                        <i class="bi bi-file-earmark-spreadsheet me-2"></i> Export CSV
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="transactionsList" class="transactions-container">
+                                <!-- Transactions will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="loading" class="loading">
-            Loading Expense Tracker...
-        </div>
-        <iframe 
-            id="streamlit-iframe" 
-            src="https://expense-tracker-2048.streamlit.app" 
-            frameborder="0"
-            onload="document.getElementById('loading').style.display='none';"
-            onerror="document.getElementById('loading').innerHTML='Error loading the application. Please try again later or check the Streamlit app URL.';">
-        </iframe>
     </div>
-    <script>
-        // Update this URL with your actual Streamlit app URL
-        const streamlitAppUrl = 'https://expense-tracker-2048.streamlit.app';
-        document.getElementById('streamlit-iframe').src = streamlitAppUrl;
-    </script>
+
+    <!-- Add Transaction Modal -->
+    <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Transaction</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="transactionForm">
+                        <div class="transaction-type-selector">
+                            <div class="type-option">
+                                <input type="radio" name="type" id="typeIncome" value="income" checked>
+                                <label for="typeIncome">
+                                    <i class="bi bi-arrow-down-circle"></i>
+                                    Income
+                                </label>
+                            </div>
+                            <div class="type-option">
+                                <input type="radio" name="type" id="typeExpense" value="expense">
+                                <label for="typeExpense">
+                                    <i class="bi bi-arrow-up-circle"></i>
+                                    Expense
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Income Fields -->
+                        <div id="incomeFields">
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="amount" step="0.01" min="0.01" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="note" class="form-label">Note (Optional)</label>
+                                <input type="text" class="form-control" id="note" placeholder="e.g., Salary, Freelance">
+                            </div>
+                            <div class="mb-3">
+                                <label for="incomeDate" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="incomeDate" required>
+                            </div>
+                            <button type="button" class="btn btn-success w-100" id="addIncomeBtn">
+                                <i class="bi bi-plus-circle"></i> Add Income
+                            </button>
+                        </div>
+
+                        <!-- Expense Fields -->
+                        <div id="expenseFields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="expenseAmount" class="form-label">Amount <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="expenseAmount" step="0.01" min="0.01" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description (Optional)</label>
+                                <input type="text" class="form-control" id="description" placeholder="e.g., Groceries, Dinner, etc.">
+                            </div>
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+                                <select class="form-select" id="category" required>
+                                    <option value="" disabled selected>Select a category</option>
+                                    <option value="Food">Food</option>
+                                    <option value="Transportation">Transportation</option>
+                                    <option value="Housing">Housing</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Shopping">Shopping</option>
+                                    <option value="Utilities">Utilities</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="expenseNote" class="form-label">Note (Optional)</label>
+                                <textarea class="form-control" id="expenseNote" rows="2" placeholder="Add any additional notes"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="date" required>
+                            </div>
+                            <button type="button" class="btn btn-danger w-100" id="addExpenseBtn">
+                                <i class="bi bi-plus-circle"></i> Add Expense
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
