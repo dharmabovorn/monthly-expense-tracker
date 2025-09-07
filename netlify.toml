@@ -1,20 +1,41 @@
 [build]
-  command = "npm run build"
-  publish = "public"
-  functions = "functions"
+  command = ""
+  publish = "."
 
 [build.environment]
-  NODE_VERSION = "16"
-  NPM_FLAGS = "--no-package-lock"
-  NPM_VERBOSE = "true"
+  NODE_VERSION = "18.x"
 
+# Redirect all requests to index.html for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+# Security headers for all responses
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data: https://cdn.jsdelivr.net;"
+
+# Development settings
 [dev]
-  framework = "#custom"
-  targetPort = 8888
+  framework = "html"
+  port = 3000
+  targetPort = 3000
+  publish = "."
   autoLaunch = true
-  publish = "public"
+
+# Environment variables
+[context.production.environment]
+  NODE_ENV = "production"
+  
+[context.deploy-preview.environment]
+  NODE_ENV = "preview"
+
+# Build plugins
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
