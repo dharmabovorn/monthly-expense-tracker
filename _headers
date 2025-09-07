@@ -1,5 +1,0 @@
-/*
-  X-Frame-Options: ALLOW-FROM https://expense-tracker-2048.streamlit.app
-  X-XSS-Protection: 1; mode=block
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
