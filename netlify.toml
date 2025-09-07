@@ -2,9 +2,6 @@
   command = ""
   publish = "."
 
-[build.environment]
-  NODE_VERSION = "16.x"
-
 # Redirect all requests to index.html for SPA routing
 [[redirects]]
   from = "/*"
@@ -28,14 +25,3 @@
   targetPort = 3000
   publish = "."
   autoLaunch = true
-
-# Environment variables
-[context.production.environment]
-  NODE_ENV = "production"
-  
-[context.deploy-preview.environment]
-  NODE_ENV = "preview"
-
-# Build plugins
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
