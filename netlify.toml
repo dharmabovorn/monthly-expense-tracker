@@ -3,7 +3,7 @@
   publish = "."
 
 [build.environment]
-  NODE_VERSION = "18.x"
+  NODE_VERSION = "16.x"
 
 # Redirect all requests to index.html for SPA routing
 [[redirects]]
