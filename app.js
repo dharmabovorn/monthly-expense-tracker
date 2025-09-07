@@ -113,10 +113,40 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('incomeDate').value = today;
     document.getElementById('date').value = today;
     
+    // Set up event delegation
+    setupEventDelegation();
+    
     // Initial render
     renderTransactions();
     updateTotals();
 });
+
+function setupEventDelegation() {
+    // Handle edit and delete button clicks using event delegation
+    document.addEventListener('click', function(e) {
+        // Handle delete button clicks
+        const deleteBtn = e.target.closest('.delete-btn');
+        if (deleteBtn) {
+            e.preventDefault();
+            const id = deleteBtn.dataset.id;
+            if (id) {
+                deleteTransaction(id);
+            }
+            return;
+        }
+        
+        // Handle edit button clicks
+        const editBtn = e.target.closest('.edit-btn');
+        if (editBtn) {
+            e.preventDefault();
+            const id = editBtn.dataset.id;
+            if (id) {
+                editTransaction(id);
+            }
+            return;
+        }
+    });
+}
 
 function setupEventListeners() {
     // Toggle between income and expense forms
@@ -413,56 +443,35 @@ function editTransaction(id) {
     // Show the appropriate tab and form
     if (transaction.type === 'income') {
         typeIncome.checked = true;
+        typeExpense.checked = false;
         incomeFields.style.display = 'block';
         expenseFields.style.display = 'none';
         
         // Populate income form
         document.getElementById('amount').value = transaction.amount;
         document.getElementById('note').value = transaction.note || '';
+        document.getElementById('incomeDate').value = transaction.date;
         
-        // Set the date input value directly from the stored date string
-        const dateInput = document.getElementById('incomeDate');
-        const [year, month, day] = transaction.date.split('-');
-        // Format as YYYY-MM-DD for the date input
-        dateInput.value = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-        
-        // Update button text
-        document.getElementById('addIncomeBtn').textContent = 'Update Income';
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('addTransactionModal'));
+        modal.show();
     } else {
         typeExpense.checked = true;
-        incomeFields.style.display = 'none';
+        typeIncome.checked = false;
         expenseFields.style.display = 'block';
+        incomeFields.style.display = 'none';
         
         // Populate expense form
         document.getElementById('expenseAmount').value = transaction.amount;
-        document.getElementById('description').value = transaction.description || '';
-        document.getElementById('category').value = transaction.category || '';
         document.getElementById('expenseNote').value = transaction.note || '';
+        document.getElementById('expenseCategory').value = transaction.category || '';
+        document.getElementById('expenseDescription').value = transaction.description || '';
+        document.getElementById('date').value = transaction.date;
         
-        // Set the date input value directly from the stored date string
-        const dateInput = document.getElementById('date');
-        const [year, month, day] = transaction.date.split('-');
-        // Format as YYYY-MM-DD for the date input
-        dateInput.value = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-        
-        // Update button text
-        document.getElementById('addExpenseBtn').textContent = 'Update Expense';
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('addTransactionModal'));
+        modal.show();
     }
-    
-    // Highlight the transaction being edited
-    const transactionElements = document.querySelectorAll('.transaction-item');
-    transactionElements.forEach(el => {
-        el.classList.remove('border-primary');
-        if (el.dataset.id === id) {
-            el.classList.add('border-primary');
-            // Scroll to the transaction
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    });
-    
-    // Show the modal
-    const modal = new bootstrap.Modal(document.getElementById('addTransactionModal'));
-    modal.show();
 }
 
 function resetForm() {
@@ -642,7 +651,7 @@ function exportToPdf() {
                 font-weight: 400;
                 line-height: 1.2;
                 text-align: center;
-                white-space: nowrap;
+                white-space: normal;
                 vertical-align: baseline;
                 border-radius: 0.25rem;
                 border: 1px solid #dee2e6;
