@@ -4,7 +4,11 @@
   "description": "A simple expense tracking application",
   "private": true,
   "scripts": {
+    "build": "echo 'No build step required for static site' && exit 0",
     "predeploy": "echo 'No predeploy steps required'",
     "postdeploy": "echo 'Deployment complete'"
+  },
+  "engines": {
+    "node": ">=12.0.0"
   }
 }
