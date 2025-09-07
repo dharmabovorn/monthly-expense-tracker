@@ -4,10 +4,14 @@
   "description": "A simple expense tracking application",
   "main": "index.html",
   "scripts": {
+    "build": "echo 'No build step required for static site'",
     "test": "echo \"No tests specified\" && exit 0"
   },
   "keywords": ["expense", "tracker", "finance"],
   "author": "",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=12.0.0"
+  }
 }
