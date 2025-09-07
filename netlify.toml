@@ -1,19 +1,10 @@
 # Basic configuration for static site
 [build]
   publish = "."
-  command = "npm run build"  # Use the build script from package.json
-  functions = false  # Disable functions
-  edge_handlers = ""  # Disable edge handlers
+  command = "npm run build"
 
-# Required for SPA routing
+# SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[dev]
-  framework = "#custom"
-  targetPort = 3000
-  port = 3000
-  publish = "."
-  autoLaunch = true
