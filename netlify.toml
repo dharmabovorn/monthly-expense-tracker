@@ -1,14 +1,13 @@
 [build]
   command = ""
-  publish = "."  # This tells Netlify to publish from the root directory
+  publish = "."
+  base = "."
 
-# Redirect all requests to index.html for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Security headers for all responses
 [[headers]]
   for = "/*"
   [headers.values]
@@ -18,9 +17,8 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data: https://cdn.jsdelivr.net;"
 
-# Development settings
 [dev]
-  framework = "html"
+  framework = "#custom"
   port = 3000
   targetPort = 3000
   publish = "."
