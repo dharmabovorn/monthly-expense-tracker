@@ -1,7 +1,7 @@
 # Basic configuration for static site
 [build]
   publish = "."
-  command = "npm run build"
+  command = ""  # No build command needed
 
 # SPA routing
 [[redirects]]
