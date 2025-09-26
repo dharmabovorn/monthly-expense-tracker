@@ -214,11 +214,11 @@ function addIncome(e) {
                 ...transactions[index],
                 amount: amount.toFixed(2),
                 date: date,
-                description: note || '',  // Use note as description if provided
-                note: '',  // Clear note since it's now the description
+                note: note || '',
                 ...monthYear
             };
         }
+        editingTransactionId = null;
     } else {
         // Add new transaction
         const transaction = {
@@ -226,8 +226,7 @@ function addIncome(e) {
             type: 'income',
             amount: amount.toFixed(2),
             date: date,
-            description: note || '',  // Use note as description if provided
-            note: '',  // Clear note since it's now the description
+            note: note || '',
             ...monthYear
         };
         transactions.unshift(transaction);
