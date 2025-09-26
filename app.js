@@ -248,16 +248,14 @@ function addExpense(e) {
     e.preventDefault();
     
     const amountInput = document.getElementById('expenseAmount');
-    const descriptionInput = document.getElementById('description');
     const categorySelect = document.getElementById('category');
     const noteInput = document.getElementById('expenseNote');
     const dateInput = document.getElementById('date');
     
     const amount = parseFloat(amountInput.value);
-    const description = descriptionInput.value.trim();
     const category = categorySelect.value;
     const note = noteInput.value.trim();
-    const date = formatDateForStorage(dateInput.value); // Format the date for storage
+    const date = formatDateForStorage(dateInput.value);
     
     // Only amount, category, and date are required
     if (!amount || isNaN(amount) || !category || !date) {
@@ -275,12 +273,12 @@ function addExpense(e) {
                 ...transactions[index],
                 amount: amount.toFixed(2),
                 date: date,
-                description: description || 'Expense', // Default description if empty
                 category: category,
-                note: note || '',
+                note: note,
                 ...monthYear
             };
         }
+        editingTransactionId = null; // Reset editing ID after update
     } else {
         // Add new transaction
         const transaction = {
@@ -288,9 +286,8 @@ function addExpense(e) {
             type: 'expense',
             amount: amount.toFixed(2),
             date: date,
-            description: description || 'Expense', // Default description if empty
             category: category,
-            note: note || '',
+            note: note,
             ...monthYear
         };
         transactions.unshift(transaction);
@@ -392,18 +389,15 @@ function addTransactionToDOM(transaction, container = transactionsList) {
                     <span class="fw-bold text-uppercase small" style="letter-spacing: 0.5px;">${typeLabel}</span>
                     <span class="text-muted small">${formattedDate}</span>
                 </div>
-                ${transaction.category || transaction.description ? `
+                ${transaction.category || transaction.note ? `
                     <div class="d-flex flex-column gap-1 mb-1">
                         ${transaction.category ? `
                             <span class="badge bg-light text-dark" style="display: inline-block; text-align: left; padding: 0.25em 0.6em; font-size: 0.85em; font-weight: 400; line-height: 1.2; white-space: normal; vertical-align: baseline; border-radius: 0.25rem; border: 1px solid #dee2e6; margin-right: auto;">${transaction.category}</span>
                         ` : ''}
-                        ${transaction.description ? `
-                            <span class="text-muted small">${transaction.description}</span>
+                        ${transaction.note ? `
+                            <span class="text-muted small">${transaction.note}</span>
                         ` : ''}
                     </div>
-                ` : ''}
-                ${transaction.note ? `
-                    <div class="small text-muted">${transaction.note}</div>
                 ` : ''}
             </div>
             <div class="text-end">
@@ -465,7 +459,6 @@ function editTransaction(id) {
         document.getElementById('expenseAmount').value = transaction.amount;
         document.getElementById('expenseNote').value = transaction.note || '';
         document.getElementById('category').value = transaction.category || '';
-        document.getElementById('description').value = transaction.description || '';
         document.getElementById('date').value = transaction.date;
         
         // Show the modal
@@ -479,7 +472,6 @@ function resetForm() {
     document.getElementById('amount').value = '';
     document.getElementById('note').value = '';
     document.getElementById('expenseAmount').value = '';
-    document.getElementById('description').value = '';
     document.getElementById('category').value = '';
     document.getElementById('expenseNote').value = '';
     
@@ -765,7 +757,6 @@ function exportToPdf() {
                     <tr>
                         <th>Date</th>
                         ${typeColumn}
-                        <th>Description</th>
                         <th>Category</th>
                         <th>Note</th>
                         <th class="text-end">Amount</th>
@@ -784,8 +775,7 @@ function exportToPdf() {
                 <tr>
                     <td>${formatDisplayDate(transaction.date)}</td>
                     ${typeCell}
-                    <td>${transaction.description || 'N/A'}</td>
-                    <td>${transaction.category ? `<span class="category">${transaction.category}</span>` : 'N/A'}</td>
+                    <td>${transaction.category || 'N/A'}</td>
                     <td>${transaction.note || ''}</td>
                     <td class="text-end ${transaction.type}">
                         ${transaction.type === 'income' ? '+' : '-'}${formatCurrency(transaction.amount)}
@@ -805,7 +795,7 @@ function exportToPdf() {
 
 function exportToCsv() {
     // Create CSV header
-    let csvContent = 'Date,Type,Description,Category,Note,Amount\n';
+    let csvContent = 'Date,Type,Category,Note,Amount\n';
     
     // Sort transactions by date (newest first)
     const sortedTransactions = [...transactions].sort((a, b) => 
@@ -817,7 +807,6 @@ function exportToCsv() {
         const row = [
             `"${transaction.date}"`,
             `"${transaction.type}"`,
-            `"${(transaction.description || '').replace(/"/g, '""')}"`,
             `"${(transaction.category || '').replace(/"/g, '""')}"`,
             `"${(transaction.note || '').replace(/"/g, '""')}"`,
             transaction.amount
