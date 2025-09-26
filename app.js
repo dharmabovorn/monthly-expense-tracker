@@ -461,11 +461,11 @@ function editTransaction(id) {
         expenseFields.style.display = 'block';
         incomeFields.style.display = 'none';
         
-        // Populate expense form
+        // Populate expense form with correct field IDs
         document.getElementById('expenseAmount').value = transaction.amount;
         document.getElementById('expenseNote').value = transaction.note || '';
-        document.getElementById('expenseCategory').value = transaction.category || '';
-        document.getElementById('expenseDescription').value = transaction.description || '';
+        document.getElementById('category').value = transaction.category || '';
+        document.getElementById('description').value = transaction.description || '';
         document.getElementById('date').value = transaction.date;
         
         // Show the modal
